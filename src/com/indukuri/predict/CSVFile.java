@@ -1,34 +1,39 @@
 package com.indukuri.predict;
 
+/**
+ * Copyright 2014.  All rights reserved to Vishnu Indukuri.
+ */
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+// A utility class that deals with the specifics of reading
+// and writing to a CSV file.  Thank God for OOP.
 public class CSVFile{
+	protected String parentFolder = "/home/vishnui/Desktop/Engines/";
 	private BufferedReader br ;
 	private BufferedWriter bw ;
-	private File inputDataFile;
 	private String[] parameters;
 	private String currentLine ;
 	
 	public CSVFile(String path, boolean outputFile) {
 		try {
-			inputDataFile = new File(path) ;
-			br = new BufferedReader(new FileReader(inputDataFile));
-			bw = new BufferedWriter(new FileWriter(inputDataFile, true));
+			br = new BufferedReader(new FileReader(parentFolder+path));
 		} catch (FileNotFoundException e) {
 			System.out.println("Problem opening input stream");
 			e.printStackTrace(); System.exit(001);
-		} catch (IOException e) {
-			System.out.println("Problem opening output stream");
-			e.printStackTrace(); System.exit(001);
 		}
 		
-		if(outputFile) return;
+		if(outputFile){
+			try {
+				bw = new BufferedWriter(new FileWriter(parentFolder+path, true));
+			} catch (IOException e) { e.printStackTrace();  System.exit(0056);	}
+			return;
+		}
 		
 		try {
 			currentLine = br.readLine();
@@ -45,9 +50,7 @@ public class CSVFile{
 		try {
 			br.close();
 			bw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.out.println("Problem ending stream");
+		} catch (Exception e) {
 		}
 	}
 	
@@ -81,8 +84,6 @@ public class CSVFile{
 		try {
 			return br.readLine().split(",");
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Problem reading stream");
 			return null;
 		}
 	}
